@@ -1,0 +1,17 @@
+---
+version: "3.0"
+services:
+  code-server:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: code-server
+    environment:
+      - PUID=1000
+      - GUID=1000
+      - TZ=Pacific
+      - HASHED_PASSWORD=${PASSWORD}
+      - DEFAULT_WORKSPACE=/config/workspace
+    volumes:
+      - ${DOCKER_STORAGE}/code:/config
+    ports:
+      - 8443:8443
+    restart: unless-stopped
