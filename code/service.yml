@@ -3,7 +3,7 @@ version: "3.0"
 services:
   code-server:
     image: lscr.io/linuxserver/code-server:latest
-    container_name: code-server
+    container_name: code
     environment:
       - PUID=1000
       - GUID=1000

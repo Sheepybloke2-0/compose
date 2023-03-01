@@ -1,0 +1,16 @@
+version: '3.0'
+services:
+  obsidian:
+    image: 'obsidian-local'
+    container_name: obsidian
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Pacific
+      - KEYBOARD=en-us-qwerty
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    volumes:
+      - ${DOCKER_STORAGE}/obsidian/vaults:/vaults
+      - ${DOCKER_STORAGE}/obsidian/config:/config

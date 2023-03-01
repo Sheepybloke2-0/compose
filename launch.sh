@@ -1,5 +1,6 @@
 #!/bin/bash
 docker-compose \
-    -f code/code_service.yml \
+    -f code/service.yml \
+    -f obsidian/service.yml \
     up -d 
 
