@@ -8,7 +8,7 @@ services:
       - PUID=1000
       - GUID=1000
       - TZ=Pacific
-      - HASHED_PASSWORD=${PASSWORD}
+      - HASHED_PASSWORD=${CODE_PASSWORD}
       - DEFAULT_WORKSPACE=/config/workspace
     volumes:
       - ${DOCKER_STORAGE}/code:/config

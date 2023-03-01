@@ -1,3 +1,7 @@
 #!/bin/bash
-apt-get install docker.io docker-compose apparmor
+apt-get install -y \
+    docker.io \
+    docker-compose \
+    apparmor \
+    npm
 
