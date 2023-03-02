@@ -1,0 +1,41 @@
+version: "3.0"
+services:
+  ghost-db:
+    image: linuxserver/mariadb
+    container_name: ghost-db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--defaults-file=/etc/mysql/healthcheck.cnf-notdefault", "--connect", "--innodb_initialized"]
+    environment:
+      - PUID=1000
+      - GUID=1000
+      - TZ=Pacific
+      - MYSQL_DATABASE=${GHOST_DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${GHOST_DB_ROOT_PASSWORD}
+      - MYSQL_USER=${GHOST_DB_USER}
+      - MYSQL_PASSWORD=${GHOST_DB_ROOT_PASSWORD}
+    volumes:
+      - ${DOCKER_STORAGE}/ghost/mariadb/config:/config
+
+
+  ghost-server:
+    image: ghost:5.36
+    container_name: ghost
+    restart: always
+    ports:
+      - 8081:2368
+    environment:
+      database__client: mysql
+      database__connection__host: ghost-db
+      database__connection__user: ${GHOST_DB_USER}
+      # Should probs not use the root password and user here...
+      database__connection__password: ${GHOST_DB_ROOT_PASSWORD}
+      database__connection__database: ${GHOST_DB_NAME}
+      # Add actual site in later, for now, just have the local ip
+      url: http://192.168.0.109:8081
+      NODE_ENV: production
+    depends_on:
+      - ghost-db
+    volumes:
+      - ${DOCKER_STORAGE}/ghost:/var/lib/ghost/content
+
