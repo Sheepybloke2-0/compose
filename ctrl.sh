@@ -2,14 +2,15 @@
 # Import common files
 source base.sh
 
-SHORT=h,c,o,g
-LONG=help,code,obsidian,ghost
+SHORT=h,c,o,g,a,f
+LONG=help,code,obsidian,ghost,adguard,follow
 OPTS=$(getopt -a -n ctrl -o $SHORT -l $LONG -- "$@")
 
 DOCKER_CMD="docker-compose"
 CODE="code/service.yml"
 OBS="obsidian/service.yml"
 GHOST="ghost/service.yml"
+ADG="adguard/service.yml"
 
 print_help () {
     pprint "Usage: ctrl [-c | --code]
@@ -49,11 +50,17 @@ list () {
     run_cmd "${1:-$DOCKER_CMD} ps"
 }
 
-# Arg1 is the docker command that was created, arg2 is the service
+# Arg1 is the docker command that was created, arg2 is the service, and arg3 for if to follow
 logs () {
     pprint "[CTRL] Showing logs for $2..." "info"
-    run_cmd "${1:-$DOCKER_CMD} logs $2"
+    if [ $3 == 1 ] ; then 
+        CMD="${1:-$DOCKER_CMD} logs -f $2"
+    else
+        CMD="${1:-$DOCKER_CMD} logs $2"
+    fi
+    run_cmd "$CMD"
 }
+
 
 eval set -- "$OPTS"
 CMD=$DOCKER_CMD
@@ -72,6 +79,14 @@ do
             CMD="$CMD -f $GHOST"
             shift;
             ;;
+        -a | --adguard )
+            CMD="$CMD -f $ADG"
+            shift;
+            ;;
+        -f | --follow )
+            FLW=1
+            shift;
+            ;;
         -h | --help )
             print_help
             ;;
@@ -88,7 +103,7 @@ done
 
 # If no options were added, add them all.
 if [ "$CMD" == "$DOCKER_CMD" ] ; then
-    CMD="$CMD -f $CODE -f $OBS -f $GHOST"
+    CMD="$CMD -f $CODE -f $OBS -f $GHOST -f $ADG"
 fi
 
 if [ -z $1 ] ; then
@@ -111,6 +126,6 @@ elif [ $FN == "shutdown" ] ; then
 elif [ $FN == "list" ] ; then
     list "$CMD"
 elif [ $FN == "logs" ] ; then
-    logs "$CMD" "$SERVICE"
+    logs "$CMD" "$SERVICE" "${FLW:-0}"
 fi
 
