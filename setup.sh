@@ -1,26 +1,21 @@
 #!/bin/bash
+source base.sh
 
-TAB=64
-INFO=$(tput setaf 4)
-SUCCESS=$(tput setaf 2)
-STD=$(tput sgr0)
-
-printf "${INFO} - Installing Docker Components...\n${STD}"
+pprint "[SETUP] Installing Docker Components..." "info"
 apt-get install -y \
     docker.io \
     docker-compose \
     apparmor \
     npm
-printf "%${TAB}s\n" "${SUCCESS}[Done]${STD}"
+success
 
-printf "${INFO} - Adding $USER to docker group...\n${STD}"
+pprint "[SETUP] Adding $USER to docker group..." "info"
 usermod -aG docker $USER
-printf "%${TAB}s\n" "${SUCCESS}[Done]${STD}"
+success
 
-printf "${INFO} - Creating .env file\n${STD}"
+pprint "[SETUP] Creating .env file" "info"
 sudo -u $USER cp -n example.env .env
-printf "%${TAB}s\n" "${SUCCESS}[Done]${STD}"
-printf "${INFO} - Update .env file with your specific values\n${STD}"
-
-printf "${INFO} - Reset shell to apply group changes with 'newgrp docker'!\n${STD}"
+success
+pprint "[SETUP] Update .env file with your specific values" "info"
+pprint "[SETUP] Reset shell to apply group changes with 'newgrp docker'!" "info"
 
